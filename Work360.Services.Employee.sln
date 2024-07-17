@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C94FFFCB-A05F-45D4-9C97-FB91ED444AD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Work360.Services.Employee.Api", "src\Work360.Services.Employee.Api\Work360.Services.Employee.Api.csproj", "{E6680326-2E6C-4AA9-BE58-FD227C6C72A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Work360.Services.Employee.Application", "src\Work360.Services.Employee.Application\Work360.Services.Employee.Application.csproj", "{2E92357E-00B6-4685-B699-A6D0262E75F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Work360.Services.Employee.Core", "src\Work360.Services.Employee.Core\Work360.Services.Employee.Core.csproj", "{D24ABC70-7261-4481-A250-5D5DCC1EBFDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Work360.Services.Employee.Infrastructure", "src\Work360.Services.Employee.Infrastructure\Work360.Services.Employee.Infrastructure.csproj", "{16C76ACE-2659-4A64-A35F-E4525BEB50EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E6680326-2E6C-4AA9-BE58-FD227C6C72A9} = {C94FFFCB-A05F-45D4-9C97-FB91ED444AD9}
+		{2E92357E-00B6-4685-B699-A6D0262E75F3} = {C94FFFCB-A05F-45D4-9C97-FB91ED444AD9}
+		{D24ABC70-7261-4481-A250-5D5DCC1EBFDD} = {C94FFFCB-A05F-45D4-9C97-FB91ED444AD9}
+		{16C76ACE-2659-4A64-A35F-E4525BEB50EA} = {C94FFFCB-A05F-45D4-9C97-FB91ED444AD9}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E6680326-2E6C-4AA9-BE58-FD227C6C72A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6680326-2E6C-4AA9-BE58-FD227C6C72A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6680326-2E6C-4AA9-BE58-FD227C6C72A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6680326-2E6C-4AA9-BE58-FD227C6C72A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E92357E-00B6-4685-B699-A6D0262E75F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E92357E-00B6-4685-B699-A6D0262E75F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E92357E-00B6-4685-B699-A6D0262E75F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E92357E-00B6-4685-B699-A6D0262E75F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D24ABC70-7261-4481-A250-5D5DCC1EBFDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D24ABC70-7261-4481-A250-5D5DCC1EBFDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D24ABC70-7261-4481-A250-5D5DCC1EBFDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D24ABC70-7261-4481-A250-5D5DCC1EBFDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16C76ACE-2659-4A64-A35F-E4525BEB50EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16C76ACE-2659-4A64-A35F-E4525BEB50EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16C76ACE-2659-4A64-A35F-E4525BEB50EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16C76ACE-2659-4A64-A35F-E4525BEB50EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
