@@ -5,5 +5,6 @@ public enum State
     Hired,
     Fired,
     InRecruitment,
+    Left,
     Unknown
 }
