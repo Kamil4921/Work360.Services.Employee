@@ -5,5 +5,6 @@ public enum Contract
     Employment,
     Performance,
     Order,
-    B2B
+    B2B,
+    Unknown
 }

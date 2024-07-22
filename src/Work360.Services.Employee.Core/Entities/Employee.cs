@@ -15,9 +15,13 @@ public class Employee : AggregateRoot
     public State State { get; private set; }
     public DateTime CreatedAt { get; private set; }
     
-    public Employee(long id, string email, string position, int salary, DateTime hiredAt, string fullName, string address, Contract typeOfContract, DateTime createdAt, State state = State.Unknown)
+    public Employee(long id, string email, string position, DateTime createdAt) : this(new AggregateId(id), email, position, 0, DateTime.Now, string.Empty, string.Empty, Contract.Unknown, State.Unknown, createdAt)
     {
-        Id = new AggregateId(id);
+    }
+
+    public Employee(AggregateId id, string email, string position, int salary, DateTime hiredAt, string fullName, string address, Contract typeOfContract, State state, DateTime createdAt ){
+
+        Id = id;
         Email = email;
         Position = position;
         Salary = salary;
