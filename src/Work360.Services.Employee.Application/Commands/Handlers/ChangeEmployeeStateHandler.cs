@@ -1,26 +1,23 @@
-using System.Diagnostics.CodeAnalysis;
 using MediatR;
-using Work360.Services.Employee.Application.Commands;
+using Work360.Services.Employee.Application.Exceptions;
+using Work360.Services.Employee.Application.Services;
 using Work360.Services.Employee.Core.Entities;
 using Work360.Services.Employee.Core.Repositories;
 
-namespace Work360.Services.Employee.Application;
+namespace Work360.Services.Employee.Application.Commands.Handlers;
 
-sealed internal class ChangeEmployeeStateHandler : IRequestHandler<ChangeCustomerState>
+internal sealed class ChangeEmployeeStateHandler(IEmployeeRepository employeeRepository, IEventMapper eventMapper, IMessageBroker messageBroker)
+    : IRequestHandler<ChangeEmployeeState>
 {
-    private readonly IEmployeeRepository _employeeRepository;
+    private readonly IEventMapper _eventMapper = eventMapper;
+    private readonly IMessageBroker _messageBroker = messageBroker;
 
-    public ChangeEmployeeStateHandler(IEmployeeRepository employeeRepository)
+    public async Task Handle(ChangeEmployeeState command, CancellationToken cancellationToken)
     {
-        _employeeRepository = employeeRepository;
-    }
-
-    public async Task Handle(ChangeCustomerState command, CancellationToken cancellationToken)
-    {
-        var employee = await _employeeRepository.GetEmployee(command.Id) ?? throw new EmployeeNotFoundException(command.Id);
+        var employee = await employeeRepository.GetEmployee(command.EmployeeId) ?? throw new EmployeeNotFoundException(command.EmployeeId);
 
         if(!Enum.TryParse<State>(command.State, true, out var state)){
-            throw new CannotChangeEmployeeStateException(command.Id, command.State);
+            throw new CannotChangeEmployeeStateException(command.EmployeeId, command.State);
         }
 
         if(employee.State == state){
@@ -41,10 +38,11 @@ sealed internal class ChangeEmployeeStateHandler : IRequestHandler<ChangeCustome
                 employee.Fired();
                 break;
             default:
-                throw new CannotChangeEmployeeStateException(command.Id, command.State);            
+                throw new CannotChangeEmployeeStateException(command.EmployeeId, command.State);            
         }
 
-        await _employeeRepository.UpdateEmployee(employee);
-        //TODO Add event
+        await employeeRepository.UpdateEmployee(employee);
+        var events = _eventMapper.MapAll(employee.Events);
+        await _messageBroker.PublishAsync(events);
     }
 }

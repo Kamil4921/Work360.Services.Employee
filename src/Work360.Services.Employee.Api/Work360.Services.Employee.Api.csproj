@@ -11,4 +11,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Work360.Services.Employee.Application\Work360.Services.Employee.Application.csproj" />
+    <ProjectReference Include="..\Work360.Services.Employee.Infrastructure\Work360.Services.Employee.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

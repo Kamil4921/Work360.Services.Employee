@@ -62,17 +62,17 @@ public class Employee : AggregateRoot
         Address = address;
         AddEvent(new EmployeeRecruitmentCompleted(this));
     }
+    
+    public void EmploymentContract() => SetTypeOfContract(Contract.Employment);
+    public void PerformanceContract() => SetTypeOfContract(Contract.Performance);
+    public void OrderContract() => SetTypeOfContract(Contract.Order);
+    public void B2BContract() => SetTypeOfContract(Contract.B2B);
 
     private void SetState(State state){
         var previousState = State;
         State = state;
         AddEvent(new EmployeeStateChanged(this, previousState));
     }
-
-    public void EmploymentContract() => SetTypeOfContract(Contract.Employment);
-    public void PerformanceContract() => SetTypeOfContract(Contract.Performance);
-    public void OrderContract() => SetTypeOfContract(Contract.Order);
-    public void B2BContract() => SetTypeOfContract(Contract.B2B);
 
     private void SetTypeOfContract(Contract contract){
         var previousContract = contract;

@@ -1,5 +1,4 @@
 using Work360.Services.Employee.Core.Entities;
-using Work360.Services.Employee.Core.Services;
 
 namespace Work360.Services.Employee.Core.Events;
 

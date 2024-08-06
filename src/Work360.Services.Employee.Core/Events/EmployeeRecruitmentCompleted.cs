@@ -1,5 +1,3 @@
-using Work360.Services.Employee.Core.Services;
-
 namespace Work360.Services.Employee.Core.Events;
 
 public class EmployeeRecruitmentCompleted(Entities.Employee employee) : IDomainEvent
