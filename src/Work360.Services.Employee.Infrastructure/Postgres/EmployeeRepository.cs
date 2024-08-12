@@ -8,9 +8,17 @@ public class EmployeeRepository(AppDbContext context) : IEmployeeRepository
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<Core.Entities.Employee?> GetEmployee(long id)
+    public async Task<Core.Entities.Employee?> GetEmployee(Guid id)
     {
-        return await _context.Employees.FirstOrDefaultAsync(e => e.Id.PESEL == id);
+        try
+        {
+            return await _context.Employees.FirstOrDefaultAsync(e => e.Id == id);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public async Task<IEnumerable<Core.Entities.Employee>> GetEmployees()
@@ -25,18 +33,21 @@ public class EmployeeRepository(AppDbContext context) : IEmployeeRepository
 
     public async Task UpdateEmployee(Core.Entities.Employee employee)
     {
-        var currentEmployee = await _context.Employees.FindAsync(employee.Id);
-        var employeeToUpdate = new Core.Entities.Employee(employee.Id, employee.Email, employee.Position,
+        var employeeToUpdate = await _context.Employees.FindAsync(employee.Id);
+        
+        employeeToUpdate.Address = string.IsNullOrEmpty(employee.Address) ? employeeToUpdate.Address : employee.Address;
+        
+        /*var employeeToUpdate = new Core.Entities.Employee(employee.PESEL, employee.Email, employee.Position,
             employee.Salary, employee.HiredAt, employee.FullName, employee.Address, employee.TypeOfContract,
             employee.State, employee.CreatedAt);
         _context.Employees.Remove(currentEmployee);
-
-        await AddEmployee(employeeToUpdate);
+*/
+        await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteEmployee(long id)
+    public async Task DeleteEmployee(Guid id)
     {
-        var employeeToDelete = await _context.Employees.FirstOrDefaultAsync(e => e.Id.PESEL == id);
+        var employeeToDelete = await _context.Employees.FirstOrDefaultAsync(e => e.Id == id);
         if (employeeToDelete is not null)
         {
             _context.Employees.Remove(employeeToDelete);            

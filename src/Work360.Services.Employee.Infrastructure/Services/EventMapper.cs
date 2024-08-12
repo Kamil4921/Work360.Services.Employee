@@ -14,15 +14,15 @@ public class EventMapper : IEventMapper
     {
         return @event switch
         {
-            EmployeeRecruitmentCompleted e => new EmployeeCreated(e.Employee.Id.PESEL),
-            EmployeeContractTypeChanged e => new Application.Events.EmployeeContractTypeChanged(e.Employee.Id.PESEL,
+            EmployeeRecruitmentCompleted e => new EmployeeCreated(e.Employee.Pesel),
+            EmployeeContractTypeChanged e => new Application.Events.EmployeeContractTypeChanged(e.Employee.Pesel,
                 e.PreviousContract.ToString(), e.Employee.TypeOfContract.ToString()),
-            EmployeeStateChanged e => new Application.Events.EmployeeStateChanged(e.Employee.Id.PESEL,
+            EmployeeStateChanged e => new Application.Events.EmployeeStateChanged(e.Employee.Pesel,
                 e.PreviousState.ToString(), e.Employee.State.ToString()),
             _ => null
         };
     }
 
-    public IEnumerable<INotification> MapAll(IEnumerable<IDomainEvent> events)
+    public IEnumerable<INotification?> MapAll(IEnumerable<IDomainEvent> events)
         => events.Select(Map);
 }

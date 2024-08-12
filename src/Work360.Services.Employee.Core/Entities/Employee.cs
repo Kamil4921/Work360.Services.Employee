@@ -1,27 +1,31 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 using Work360.Services.Employee.Core.Events;
 using Work360.Services.Employee.Core.Exceptions;
 
 namespace Work360.Services.Employee.Core.Entities;
 
 public class Employee : AggregateRoot
-{   
+{
+    public long Pesel { get; private set; }
     public string Email { get; private set; }
     public string Position { get; private set; }
     public int Salary { get; private set; }
     public DateTime HiredAt { get; private set; }
     public string FullName { get; private set; }
-    public string Address { get; private set; }
+    public string Address { get; set; }
     public Contract TypeOfContract { get; set; }
     public State State { get; private set; }
     public DateTime CreatedAt { get; private set; }
     
-    public Employee(long id, string email, string position, DateTime createdAt) : this(new AggregateId(id), email, position, 0, DateTime.Now, string.Empty, string.Empty, Contract.Unknown, State.Unknown, createdAt)
+    public Employee(long pesel, string email, string position, DateTime createdAt) : this(pesel ,email, position, 0, DateTime.Now, string.Empty, string.Empty, Contract.Unknown, State.Unknown, createdAt)
     {
     }
 
-    public Employee(AggregateId id, string email, string position, int salary, DateTime hiredAt, string fullName, string address, Contract typeOfContract, State state, DateTime createdAt ){
+    public Employee(long pesel ,string email, string position, int salary, DateTime hiredAt, string fullName, string address, Contract typeOfContract, State state, DateTime createdAt ){
 
-        Id = id;
+        Id = Guid.NewGuid();
+        Pesel = pesel;
         Email = email;
         Position = position;
         Salary = salary;
@@ -41,19 +45,19 @@ public class Employee : AggregateRoot
     public void CompleteRecruitment(string fullName, string position, DateTime hiredAt, string address){
 
         if(string.IsNullOrWhiteSpace(fullName)){
-            throw new InvalidEmployeeFullNameException(Id.PESEL, fullName);
+            throw new InvalidEmployeeFullNameException(Pesel, fullName);
         }
 
         if(string.IsNullOrWhiteSpace(position)){
-            throw new InvalidEmployeePositionException(Id.PESEL, position);
+            throw new InvalidEmployeePositionException(Pesel, position);
         }
 
         if(hiredAt > DateTime.Today){
-            throw new InvalidEmployeeHiredDateException(Id.PESEL, hiredAt);
+            throw new InvalidEmployeeHiredDateException(Pesel, hiredAt);
         }
 
         if(string.IsNullOrWhiteSpace(address)){
-            throw new InvalidEmployeeAddressException(Id.PESEL, address);
+            throw new InvalidEmployeeAddressException(Pesel, address);
         }
 
         FullName = fullName;
