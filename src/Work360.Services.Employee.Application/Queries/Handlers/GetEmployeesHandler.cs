@@ -15,7 +15,8 @@ internal sealed class GetEmployeesHandler(IEmployeeRepository employeeRepository
 
         var employeesDto = employees.Select(employee => new EmployeeDto
             {
-                State = employee.State,
+                Pesel = employee.Pesel,
+                State = employee.State.ToString(),
                 Address = employee.Address,
                 Email = employee.Email,
                 Position = employee.Position,
@@ -23,7 +24,7 @@ internal sealed class GetEmployeesHandler(IEmployeeRepository employeeRepository
                 CreatedAt = employee.CreatedAt,
                 FullName = employee.FullName,
                 HiredAt = employee.HiredAt,
-                TypeOfContract = employee.TypeOfContract
+                TypeOfContract = employee.TypeOfContract.ToString()
             })
             .ToList();
 

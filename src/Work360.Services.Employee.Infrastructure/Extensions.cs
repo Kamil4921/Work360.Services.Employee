@@ -17,7 +17,7 @@ public static class Extensions
       services.AddTransient<IMessageBroker, MessageBroker>();
 
       services.AddEntityFrameworkNpgsql().AddDbContext<AppDbContext>(opt =>
-         opt.UseNpgsql("Server=localhost;Port=5432;Database=postgres;User ID=postgres;Password=password;Database=Employees"));
+         opt.UseNpgsql("Server=localhost;Port=5432;Database=postgres;User ID=postgres;Password=password;"));
 //      services.AddNpgsql<AppDbContext>("Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=password");
       return services;
    }
