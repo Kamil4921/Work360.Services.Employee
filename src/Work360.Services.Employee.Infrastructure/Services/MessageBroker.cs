@@ -15,8 +15,8 @@ public class MessageBroker : IMessageBroker
     {
         var factory = new ConnectionFactory
         {
-            HostName = "Rabbit",
-            Port = 8080
+            HostName = "localhost",
+            Port = 5672
         };
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();

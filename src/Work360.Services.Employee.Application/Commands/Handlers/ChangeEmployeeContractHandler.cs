@@ -1,14 +1,17 @@
 using MediatR;
 using Work360.Services.Employee.Application.Exceptions;
+using Work360.Services.Employee.Application.Services;
 using Work360.Services.Employee.Core.Entities;
 using Work360.Services.Employee.Core.Repositories;
 
 namespace Work360.Services.Employee.Application.Commands.Handlers;
 
-internal sealed class ChangeEmployeeContractHandler(IEmployeeRepository employeeRepository)
+internal sealed class ChangeEmployeeContractHandler(IEmployeeRepository employeeRepository, IEventMapper eventMapper, IMessageBroker messageBroker)
     : IRequestHandler<ChangeEmployeeContract>
 {
     private readonly IEmployeeRepository _employeeRepository = employeeRepository;
+    private readonly IEventMapper _eventMapper = eventMapper;
+    private readonly IMessageBroker _messageBroker = messageBroker;
 
     public async Task Handle(ChangeEmployeeContract command, CancellationToken cancellationToken)
     {
@@ -48,7 +51,7 @@ internal sealed class ChangeEmployeeContractHandler(IEmployeeRepository employee
         }
 
         await _employeeRepository.UpdateEmployee(employee);
-        //var events = _eventMapper.MapAll(employee.Events);
-        //await _messageBroker.PublishAsync(events);
+        var events = _eventMapper.MapAll(employee.Events);
+        await _messageBroker.PublishAsync(events);
     }
 }
