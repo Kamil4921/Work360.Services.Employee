@@ -27,12 +27,12 @@ public class Employee : AggregateRoot
         Email = email;
         Position = string.IsNullOrWhiteSpace(position) ? throw new InvalidEmployeePositionException(Pesel, position) : position;
         Salary = salary;
-        HiredAt = hiredAt > DateTime.Today ? throw new InvalidEmployeeHiredDateException(Pesel, hiredAt) : hiredAt;
-        FullName = string.IsNullOrWhiteSpace(fullName) ? throw new InvalidEmployeeFullNameException(Pesel, fullName) : fullName;
-        Address = string.IsNullOrWhiteSpace(address) ? throw new InvalidEmployeeAddressException(Pesel, address) : address;
+        HiredAt = hiredAt.Date > DateTime.Today.Date ? throw new InvalidEmployeeHiredDateException(Pesel, hiredAt) : hiredAt;
+        FullName = fullName;
+        Address = address;
         TypeOfContract = typeOfContract;
         State = state;
-        CreatedAt = DateTime.Now;
+        CreatedAt = DateTime.UtcNow;
         Version = 1;
         AddEvent(new EmployeeRecruitmentCompleted(this));
     }

@@ -36,30 +36,30 @@ app.MapGet("/employees", async (ISender mediator) =>
                         .WithOpenApi()
                         .WithName("GetEmployees");
 
-app.MapGet("/employee/changeState", async (ISender mediator, Guid id, string state) => 
+app.MapPatch("/employee/changeState", async (ISender mediator, Guid id, string state) => 
         await mediator.Send(new ChangeEmployeeState(id, state)))
                         .WithOpenApi()
                         .WithName("ChangeEmployeeState");
 
-app.MapGet("/employee/changeContract", async (ISender mediator, Guid id, string contract) =>
+app.MapPatch("/employee/changeContract", async (ISender mediator, Guid id, string contract) =>
         await mediator.Send(new ChangeEmployeeContract(id, contract)))
                         .WithOpenApi()
                         .WithName("ChangeEmployeeContract");
 
-app.MapGet("/employee/add", async (ISender mediator, Employee employee) => 
-        await mediator.Send(new EmployeeRegistration(employee.Pesel,
-        employee.Email, employee.Salary, employee.TypeOfContract, employee.State, employee.FullName, employee.Position,
-        employee.HiredAt, employee.Address)))
+app.MapPost("/employee/add", async (ISender mediator, long pesel, string email, int salary, Contract typeOfContract,
+            State state, string fullName, string position, DateTime hiredAt, string address) =>
+        await mediator.Send(new EmployeeRegistration(pesel, email, salary, typeOfContract, state, fullName, position, hiredAt, address)))
                         .WithOpenApi()
                         .WithName("AddEmployee");
 
-app.MapGet("/employee/delete", async (ISender mediator, Guid id) => 
+app.MapDelete("/employee/delete", async (ISender mediator, Guid id) => 
         await mediator.Send(new DeleteEmployee(id)))
                         .WithOpenApi()
                         .WithName("DeleteEmployee");
 
-app.MapGet("/employee/update", async (ISender mediator, Employee employee) => 
-        await mediator.Send(new UpdateEmployee(employee)))
+app.MapPut("/employee/update", async (ISender mediator, Guid id, long pesel, string? email, int salary, Contract typeOfContract,
+            State state, string? fullName, string? position, DateTime hiredAt, string? address) =>
+        await mediator.Send(new UpdateEmployee(id, pesel, email, salary, typeOfContract, state, fullName, position, hiredAt, address)))
                         .WithOpenApi()
                         .WithName("UpdateEmployee");
 

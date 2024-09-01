@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Work360.Services.Employee.Application.Services;
@@ -18,7 +17,7 @@ public static class Extensions
 
       services.AddEntityFrameworkNpgsql().AddDbContext<AppDbContext>(opt =>
          opt.UseNpgsql("Server=localhost;Port=5432;Database=postgres;User ID=postgres;Password=password;"));
-//      services.AddNpgsql<AppDbContext>("Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=password");
+      
       return services;
    }
 }
