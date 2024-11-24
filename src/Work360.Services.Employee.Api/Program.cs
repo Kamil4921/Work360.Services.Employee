@@ -19,9 +19,9 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-
-if (app.Environment.IsDevelopment())
+//app.UseHttpsRedirection();
+// Change to test container
+if (app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1"));
