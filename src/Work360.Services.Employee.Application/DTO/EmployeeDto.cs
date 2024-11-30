@@ -1,6 +1,6 @@
 namespace Work360.Services.Employee.Application.DTO;
 
-public class EmployeeDto
+public record EmployeeDto
 {
     public long Pesel { get; set; }
     public string Email { get; set; }

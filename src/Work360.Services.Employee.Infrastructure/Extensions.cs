@@ -13,7 +13,8 @@ public static class Extensions
    {
       services.AddSingleton<IEventMapper, EventMapper>();
       services.AddTransient<IEmployeeRepository, EmployeeRepository>();
-      services.AddTransient<IMessageBroker, MessageBroker>();
+      //services.AddTransient<IMessageBroker, MessageBroker>();
+      services.AddSingleton<IMessageBroker, MessageBrokerASB>();
 
       services.AddEntityFrameworkNpgsql().AddDbContext<AppDbContext>(opt =>
          opt.UseNpgsql("Server=localhost;Port=5432;Database=postgres;User ID=postgres;Password=password;"));
