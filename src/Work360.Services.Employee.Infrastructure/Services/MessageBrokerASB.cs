@@ -8,7 +8,7 @@ namespace Work360.Services.Employee.Infrastructure.Services;
 
 public class MessageBrokerASB : IMessageBroker
 {
-    private const string connectionString = "Endpoint=sb://localhost:8081/";
+    private const string connectionString = "Endpoint=sb://localhost:5672/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=RootManageSharedAccessKeyValue;UseDevelopmentEmulator=true;";
     public async Task PublishAsync(params INotification[] events)
     {
         var client = new ServiceBusClient(connectionString);
