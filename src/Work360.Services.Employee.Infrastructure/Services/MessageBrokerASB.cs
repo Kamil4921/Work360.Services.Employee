@@ -13,7 +13,7 @@ public class MessageBrokerASB : IMessageBroker
     {
         var client = new ServiceBusClient(connectionString);
         var sender = client.CreateSender("employee-topic");
-        var message = new ServiceBusMessage(JsonSerializer.Serialize(events));
+        var message = new ServiceBusMessage(JsonSerializer.Serialize(events, new JsonSerializerOptions{ WriteIndented = true }));
 
         await sender.SendMessageAsync(message);
     }
@@ -22,8 +22,13 @@ public class MessageBrokerASB : IMessageBroker
     {
         var client = new ServiceBusClient(connectionString);
         var sender = client.CreateSender("employee-topic");
-        var messages = events.Select(@event => new ServiceBusMessage(JsonSerializer.Serialize(@event)));
 
-        await sender.SendMessagesAsync(messages);
+        foreach (var @event in events)
+        {
+            await PublishAsync(@event);
+        }
+        //var messages = events.Select(@event => new ServiceBusMessage(JsonSerializer.Serialize(@event)));
+
+        //await sender.SendMessagesAsync(messages);
     }
 }
