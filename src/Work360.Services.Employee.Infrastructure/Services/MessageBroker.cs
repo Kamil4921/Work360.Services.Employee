@@ -1,49 +1,27 @@
-using System.Text;
+using System.Text.Json;
+using Azure.Messaging.ServiceBus;
 using MediatR;
-using Newtonsoft.Json;
-using RabbitMQ.Client;
 using Work360.Services.Employee.Application.Services;
 
 namespace Work360.Services.Employee.Infrastructure.Services;
 
 public class MessageBroker : IMessageBroker
 {
-    private readonly IConnection _connection;
-    private readonly IModel _channel;
-
-    public MessageBroker()
+    private const string connectionString = "Endpoint=sb://localhost:5672/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=RootManageSharedAccessKeyValue;UseDevelopmentEmulator=true;";
+    public async Task PublishAsync(params INotification[] events)
     {
-        var factory = new ConnectionFactory
-        {
-            HostName = "localhost",
-            Port = 5672
-        };
-        _connection = factory.CreateConnection();
-        _channel = _connection.CreateModel();
-        _channel.ExchangeDeclare(exchange:"trigger", type: ExchangeType.Fanout);
+        var client = new ServiceBusClient(connectionString);
+        var sender = client.CreateSender("employee-topic");
+        var message = new ServiceBusMessage(JsonSerializer.Serialize(events, new JsonSerializerOptions{ WriteIndented = true }));
+
+        await sender.SendMessageAsync(message);
     }
 
-    public Task PublishAsync(params INotification[] events) => PublishAsync(events?.AsEnumerable());
-
-    public Task PublishAsync(IEnumerable<INotification> events)
+    public async Task PublishAsync(IEnumerable<INotification> events)
     {
-        //logging
-        if (_connection.IsOpen)
+        foreach (var @event in events)
         {
-            foreach (var @event in events)
-            {
-                //logging
-                
-                var message = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(@event, Formatting.Indented));
-                _channel.BasicPublish(exchange: "trigger",
-                                    routingKey:"",
-                                    basicProperties: null,
-                                    body: message);
-                
-            }
-            return Task.CompletedTask;
+            await PublishAsync(@event);
         }
-
-        return Task.CompletedTask;
     }
 }
