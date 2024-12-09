@@ -19,8 +19,6 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-//app.UseHttpsRedirection();
-// Change to test container
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
