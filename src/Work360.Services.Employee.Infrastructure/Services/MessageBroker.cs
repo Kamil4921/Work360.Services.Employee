@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Azure.Messaging.ServiceBus;
 using MediatR;
+using Work360.Services.Employee.Application.Events;
 using Work360.Services.Employee.Application.Services;
 
 namespace Work360.Services.Employee.Infrastructure.Services;
@@ -12,7 +13,7 @@ public class MessageBroker : IMessageBroker
     {
         var client = new ServiceBusClient(connectionString);
         var sender = client.CreateSender("employee-topic");
-        var message = new ServiceBusMessage(JsonSerializer.Serialize(events, new JsonSerializerOptions{ WriteIndented = true }));
+        var message = new ServiceBusMessage(Newtonsoft.Json.JsonConvert.SerializeObject(events));
 
         await sender.SendMessageAsync(message);
     }
