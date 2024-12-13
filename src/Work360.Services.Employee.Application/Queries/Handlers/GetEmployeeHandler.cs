@@ -8,11 +8,9 @@ namespace Work360.Services.Employee.Application.Queries.Handlers;
 internal sealed class GetEmployeeHandler(IEmployeeRepository employeeRepository)
     : IRequestHandler<GetEmployee, EmployeeDto>
 {
-    private readonly IEmployeeRepository _employeeRepository = employeeRepository;
-
     public async Task<EmployeeDto> Handle(GetEmployee request, CancellationToken cancellationToken)
     {
-        var employee = await _employeeRepository.GetEmployee(request.EmployeeId);
+        var employee = await employeeRepository.GetEmployee(request.EmployeeId);
 
         if (employee is null)
         {

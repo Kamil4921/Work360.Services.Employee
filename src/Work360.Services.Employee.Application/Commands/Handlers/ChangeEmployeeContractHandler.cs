@@ -9,13 +9,9 @@ namespace Work360.Services.Employee.Application.Commands.Handlers;
 internal sealed class ChangeEmployeeContractHandler(IEmployeeRepository employeeRepository, IEventMapper eventMapper, IMessageBroker messageBroker)
     : IRequestHandler<ChangeEmployeeContract>
 {
-    private readonly IEmployeeRepository _employeeRepository = employeeRepository;
-    private readonly IEventMapper _eventMapper = eventMapper;
-    private readonly IMessageBroker _messageBroker = messageBroker;
-
     public async Task Handle(ChangeEmployeeContract command, CancellationToken cancellationToken)
     {
-        var employee = await _employeeRepository.GetEmployee(command.EmployeeId);
+        var employee = await employeeRepository.GetEmployee(command.EmployeeId);
 
         if (employee is null)
         {
@@ -50,8 +46,8 @@ internal sealed class ChangeEmployeeContractHandler(IEmployeeRepository employee
                 throw new CannotChangeEmployeeContractException(command.EmployeeId, command.Contract);     
         }
 
-        await _employeeRepository.UpdateEmployee(employee);
-        var events = _eventMapper.MapAll(employee.Events);
-        await _messageBroker.PublishAsync(events);
+        await employeeRepository.UpdateEmployee(employee);
+        var events = eventMapper.MapAll(employee.Events);
+        await messageBroker.PublishAsync(events);
     }
 }

@@ -4,9 +4,9 @@ using Work360.Services.Employee.Core.Entities;
 namespace Work360.Services.Employee.Application.Commands;
 
 [Contract]
-public class EmployeeRegistration(long Pesel, string email, int salary, Contract typeOfContract, State state, string fullName, string position, DateTime hiredAt, string address) : IRequest<Guid>
+public class EmployeeRegistration(long pesel, string email, int salary, Contract typeOfContract, State state, string fullName, string position, DateTime hiredAt, string address) : IRequest<Guid>
 {
-    public long Pesel { get; } = Pesel;
+    public long Pesel { get; } = pesel;
     public string Email { get; } = email;
     public int Salary { get; } = salary;
     public Contract TypeOfContract { get; } = typeOfContract;

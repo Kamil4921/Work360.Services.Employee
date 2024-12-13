@@ -7,13 +7,9 @@ namespace Work360.Services.Employee.Application.Commands.Handlers;
 
 internal sealed class UpdateEmployeeHandler(IEmployeeRepository employeeRepository,  IEventMapper eventMapper, IMessageBroker messageBroker) : IRequestHandler<UpdateEmployee>
 {
-    private readonly IEmployeeRepository _employeeRepository = employeeRepository;
-    private readonly IEventMapper _eventMapper = eventMapper;
-    private readonly IMessageBroker _messageBroker = messageBroker;
-
     public async Task Handle(UpdateEmployee command, CancellationToken cancellationToken)
     {
-        var employee = await _employeeRepository.GetEmployee(command.Id);
+        var employee = await employeeRepository.GetEmployee(command.Id);
 
         if (employee is null)
         {
@@ -31,10 +27,10 @@ internal sealed class UpdateEmployeeHandler(IEmployeeRepository employeeReposito
         employee.FullName = command.FullName ?? employee.FullName;
         employee.HiredAt = new DateTime(command.HiredAt.Ticks, DateTimeKind.Utc);
         
-        await _employeeRepository.UpdateEmployee(employee);
+        await employeeRepository.UpdateEmployee(employee);
         employee.EmployeeUpdated(previousEmployeeData);
         
-        var events = _eventMapper.MapAll(employee.Events);
-        await _messageBroker.PublishAsync(events);
+        var events = eventMapper.MapAll(employee.Events);
+        await messageBroker.PublishAsync(events);
     }
 }
