@@ -16,7 +16,7 @@ public class EventMapper : IEventMapper
     {
         return @event switch
         {
-            EmployeeRecruitmentCompleted e => new EmployeeCreated(e.Employee.Id),
+            EmployeeRecruitmentCompleted e => new EmployeeCreated(e.Employee.Id, e.Employee.FullName),
             EmployeeContractTypeChanged e => new Application.Events.EmployeeContractTypeChanged(e.Employee.Id,
                 e.PreviousContract.ToString(), e.Employee.TypeOfContract.ToString()),
             EmployeeStateChanged e => new Application.Events.EmployeeStateChanged(e.Employee.Id,
