@@ -16,7 +16,7 @@ public static class Extensions
       services.AddSingleton<IMessageBroker, MessageBroker>();
 
       services.AddEntityFrameworkNpgsql().AddDbContext<AppDbContext>(opt =>
-         opt.UseNpgsql("Server=localhost;Port=5432;Database=postgres;User ID=postgres;Password=password;"));
+         opt.UseNpgsql("Server=172.18.0.3;Port=5432;Database=postgres;User ID=postgres;Password=password;"));
       
       return services;
    }
