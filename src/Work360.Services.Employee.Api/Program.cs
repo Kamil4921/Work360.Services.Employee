@@ -1,10 +1,12 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Work360.Services.Employee.Application;
 using Work360.Services.Employee.Application.Queries;
 using Work360.Services.Employee.Application.Commands;
 using Work360.Services.Employee.Core.Entities;
 using Work360.Services.Employee.Infrastructure;
+using Work360.Services.Employee.Infrastructure.Postgres;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,18 @@ if (!app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1"));
     app.UseExceptionHandler(_ => {});
+
+    // TODO: Extract to helper
+    #region Migration
+    
+    using var scope = ((IApplicationBuilder)app).ApplicationServices.CreateScope();
+
+    using AppDbContext dbContext =
+        scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    dbContext.Database.Migrate();
+
+    #endregion
 }
 
 app.MapGet("/employee", async (ISender mediator, Guid id) => await mediator.Send(new GetEmployee(id))).WithOpenApi()
