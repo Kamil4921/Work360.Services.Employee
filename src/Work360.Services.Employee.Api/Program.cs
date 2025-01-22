@@ -32,7 +32,7 @@ if (!app.Environment.IsDevelopment())
     
     using var scope = ((IApplicationBuilder)app).ApplicationServices.CreateScope();
 
-    using AppDbContext dbContext =
+    using var dbContext =
         scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
     dbContext.Database.Migrate();
