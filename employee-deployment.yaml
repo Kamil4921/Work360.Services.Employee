@@ -20,15 +20,22 @@ spec:
     spec:
       containers:
         - name: work360-employee
-          image: kamil4921/work360-services-employee:master-085beea
+          image: kamil4921/work360-services-employee:1
           ports:
             - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: work360-employee-service
-  namespace: work360-namespace
+  name: work360-employee-lb
+  namespace: work360-employee
 spec:
   selector:
     app: work360-employee
