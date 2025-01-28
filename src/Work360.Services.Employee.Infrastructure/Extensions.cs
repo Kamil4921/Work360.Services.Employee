@@ -17,7 +17,7 @@ public static class Extensions
       services.AddSingleton<IMessageBroker, MessageBroker>();
 
       services.AddEntityFrameworkNpgsql().AddDbContext<AppDbContext>(opt =>
-         opt.UseNpgsql("Server=postgresDb;Port=5432;Database=postgres;User ID=postgres;Password=password;",
+         opt.UseNpgsql("Server=postgres-db;Port=5432;Database=postgres;User ID=postgres;Password=password;",
             npgsqlOptions =>
                npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Default)));
       

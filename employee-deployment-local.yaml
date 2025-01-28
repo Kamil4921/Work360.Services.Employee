@@ -5,24 +5,42 @@ metadata:
 ---
 # BEGIN PVC TODO: doczytac o storage
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
-  name: postgres-pvc
+  name: postgres-pv
   namespace: work360-employee
 spec:
+  storageClassName: manual
   accessModes:
     - ReadWriteMany
   capacity:
     storage: 1Gi
-# END
+  hostPath:
+    path: "mnt/data"
+
 ---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  labels:
+    app: postgres
+  name: postgres-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+# END
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: work360-employee-deployment
   namespace: work360-employee
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: work360-employee
@@ -31,7 +49,29 @@ spec:
       labels:
         app: work360-employee
     spec:
+      initContainers:
+        - name: init-postgres
+          image: busybox
+          command: ['sh', '-c', 'until nc -z postgres-db 5432; do echo waiting for postgres; sleep 2; done;']
       containers:
+#BEGIN POSTGRES Zalezne od PVC
+        - name: postgres-db
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "postgres"
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: password
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 5
+            periodSeconds: 10
+#END
         - name: work360-employee
           image: kamil4921/work360-services-employee:1
           ports:
@@ -43,19 +83,6 @@ spec:
             limits:
               cpu: 200m
               memory: 200Mi
-#BEGIN POSTGRES Zalezne od PVC
-        - name: postgresDb
-          image: postgres:latest
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_DB
-              value: "postgres"
-            - name: POSTGRES_USER
-              value: postgres
-            - name: POSTGRES_PASSWORD
-              value: password
-#END
 ---
 apiVersion: v1
 kind: Service
@@ -70,3 +97,17 @@ spec:
       port: 8080
       targetPort: 8080
   type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-db
+  namespace: work360-employee
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP

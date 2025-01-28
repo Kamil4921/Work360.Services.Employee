@@ -21,7 +21,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     public AppDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseNpgsql("Server=postgresDb;Port=5432;Database=postgres;User ID=postgres;Password=password;",
+        optionsBuilder.UseNpgsql("Server=postgres-db;Port=5432;Database=postgres;User ID=postgres;Password=password;",
             npgsqlOptions =>
                 npgsqlOptions.MigrationsHistoryTable(HistoryRepository.DefaultTableName, Schemas.Default));
 
