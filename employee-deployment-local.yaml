@@ -2,8 +2,9 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: work360-employee
+
 ---
-# BEGIN PVC TODO: doczytac o storage
+# Persistent Volume (PV) and Claim (PVC) for PostgreSQL
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -11,29 +12,89 @@ metadata:
   namespace: work360-employee
 spec:
   storageClassName: manual
-  accessModes:
-    - ReadWriteMany
   capacity:
     storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
   hostPath:
-    path: "mnt/data"
+    path: /mnt/data
 
 ---
-kind: PersistentVolumeClaim
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  labels:
-    app: postgres
   name: postgres-pvc
+  namespace: work360-employee
 spec:
   storageClassName: manual
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
+
 ---
-# END
+# PostgreSQL Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-db
+  namespace: work360-employee
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-db
+  template:
+    metadata:
+      labels:
+        app: postgres-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "postgres"
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: password
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "exec pg_isready -h localhost -U postgres"
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+
+---
+# PostgreSQL Service (ClusterIP)
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-db
+  namespace: work360-employee
+spec:
+  selector:
+    app: postgres-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+# Application Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,28 +111,10 @@ spec:
         app: work360-employee
     spec:
       initContainers:
-        - name: init-postgres
-          image: busybox
-          command: ['sh', '-c', 'until nc -z postgres-db 5432; do echo waiting for postgres; sleep 2; done;']
+        - name: wait-for-postgres
+          image: busybox:1.28
+          command: ['sh', '-c', 'until nc -z postgres-db 5432; do echo "Waiting for PostgreSQL..."; sleep 2; done;']
       containers:
-#BEGIN POSTGRES Zalezne od PVC
-        - name: postgres-db
-          image: postgres:latest
-          ports:
-            - containerPort: 5432
-          env:
-            - name: POSTGRES_DB
-              value: "postgres"
-            - name: POSTGRES_USER
-              value: postgres
-            - name: POSTGRES_PASSWORD
-              value: password
-          readinessProbe:
-            tcpSocket:
-              port: 5432
-            initialDelaySeconds: 5
-            periodSeconds: 10
-#END
         - name: work360-employee
           image: kamil4921/work360-services-employee:1
           ports:
@@ -83,7 +126,9 @@ spec:
             limits:
               cpu: 200m
               memory: 200Mi
+
 ---
+# Application Service (LoadBalancer)
 apiVersion: v1
 kind: Service
 metadata:
@@ -97,17 +142,3 @@ spec:
       port: 8080
       targetPort: 8080
   type: LoadBalancer
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres-db
-  namespace: work360-employee
-spec:
-  selector:
-    app: postgres
-  ports:
-    - protocol: TCP
-      port: 5432
-      targetPort: 5432
-  type: ClusterIP
